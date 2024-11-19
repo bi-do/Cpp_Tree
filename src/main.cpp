@@ -9,7 +9,7 @@ int main(void)
     TreeDB *DB = TreeDB::getTree();
     DB->rootNode = new AvlNode(5);
 
-    int collection[] = {1, 8, 7, 10};
+    int collection[] = {1, 8, 7, 10, 6};
     for (const auto element : collection)
     {
         DB->insertNode(element);

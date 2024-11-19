@@ -232,20 +232,20 @@ public:
         if (BF < -1)
         {
             AvlNode *rightTmp = static_cast<AvlNode *>(this->getRight());
-            if (rightTmp->getBalanceFactor() >= 0)
-            {
-                Tmp = &this->LeftRotate();
-            }
-            else
+            if (rightTmp->getBalanceFactor() > 0)
             {
                 this->right = &rightTmp->RitgtRotate();
                 Tmp = &this->LeftRotate();
             }
+            else
+            {
+                Tmp = &this->LeftRotate();
+            }
         }
-        if (BF > 1)
+        else if (BF > 1)
         {
             AvlNode *leftTmp = static_cast<AvlNode *>(this->getLeft());
-            if (leftTmp->getBalanceFactor() >= 0)
+            if (leftTmp->getBalanceFactor() < 0)
             {
                 this->left = &leftTmp->LeftRotate();
                 Tmp = &this->RitgtRotate();
