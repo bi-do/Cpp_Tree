@@ -1,4 +1,3 @@
-#include "bst.h"
 #include "treedb.h"
 class bstNode;
 TreeDB *TreeDB::getTree()

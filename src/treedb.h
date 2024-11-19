@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+#include "bst.h"
 class BstNode;
 class TreeDB
 {
