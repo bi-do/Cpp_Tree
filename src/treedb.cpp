@@ -1,5 +1,6 @@
 #include "treedb.h"
-class bstNode;
+#include "bst.h"
+
 TreeDB *TreeDB::getTree()
 {
     if (instance == nullptr)
@@ -14,6 +15,11 @@ TreeDB::~TreeDB()
     delete rootNode;
     delete instance;
 }
+void TreeDB::rootinsert(BstNode &insert)
+{
+    insert.setColor(true);
+    rootNode = &insert;
+}
 void TreeDB::insertNode(int data)
 {
     rootNode->insertNode(data);
@@ -21,6 +27,10 @@ void TreeDB::insertNode(int data)
 void TreeDB::in_OrderTravers()
 {
     rootNode->in_OrderTraversal();
+}
+void TreeDB::post_OrderTravers()
+{
+    rootNode->post_OrderTraversal();
 }
 const BstNode *TreeDB::SearchNode(int data)
 {

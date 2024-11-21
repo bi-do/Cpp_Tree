@@ -2,6 +2,7 @@
 #include <iostream>
 #include "bst.h"
 class BstNode;
+
 class TreeDB
 {
 private:
@@ -15,11 +16,17 @@ public:
     static TreeDB *getTree();
     ~TreeDB();
 
+    /**루트 노드 삽입 (트리 속성 변경) */
+    void rootinsert(BstNode &insert);
+
     /**루트 노드 기준 노드 삽입 */
     void insertNode(int data);
 
     /**루트 노드 기준 중위 선회 */
     void in_OrderTravers();
+
+    /**루트 노드 기준 전위 선회 */
+    void post_OrderTravers();
 
     /**노드 검색 */
     const BstNode *SearchNode(int data);
