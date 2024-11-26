@@ -1,6 +1,7 @@
 #include "treedb.h"
 #include "bst.h"
 
+
 TreeDB *TreeDB::getTree()
 {
     if (instance == nullptr)

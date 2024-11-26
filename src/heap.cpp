@@ -2,7 +2,7 @@
 void Heap::insert(int data)
 {
     BstNode &newTmp = *new BstNode(data);
-    /**ìµœì´ˆ ì‚½ìž… ì‹œ */
+    /**ÃÖÃÊ »ðÀÔ ½Ã */
     if (rootNode == nullptr)
     {
         rootNode = &newTmp;
@@ -11,7 +11,7 @@ void Heap::insert(int data)
     }
     else
     {
-        /**ë§ˆì§€ë§‰ ì‚½ìž… í•œ ìœ„ì¹˜ê°€ ë£¨íŠ¸ ë…¸ë“œ ì¼ ì‹œ */
+        /**¸¶Áö¸· »ðÀÔ ÇÑ À§Ä¡°¡ ·çÆ® ³ëµå ÀÏ ½Ã */
         if (lastInsert == rootNode)
         {
             rootNode->setLeft(&newTmp);
@@ -69,12 +69,12 @@ BstNode *Heap::BiggerChild(BstNode *pParent)
 }
 BstNode *Heap::FindInsertParent(BstNode &lastInsert)
 {
-    /**ë§ˆì§€ë§‰ìœ¼ë¡œ ì‚½ìž…ëœ ìžì‹ì´ ë¶€ëª¨ì˜ ì™¼ìª½ ì¼ ê²½ìš° */
+    /**¸¶Áö¸·À¸·Î »ðÀÔµÈ ÀÚ½ÄÀÌ ºÎ¸ðÀÇ ¿ÞÂÊ ÀÏ °æ¿ì */
     if (&lastInsert == lastInsert.getparent()->getLeft())
     {
         return lastInsert.getparent();
     }
-    /**ë§ˆì§€ë§‰ìœ¼ë¡œ ì‚½ìž…ëœ ìžì‹ì´ ë¶€ëª¨ì˜ ì˜¤ë¥¸ìª½ ì¼ ë•Œ */
+    /**¸¶Áö¸·À¸·Î »ðÀÔµÈ ÀÚ½ÄÀÌ ºÎ¸ðÀÇ ¿À¸¥ÂÊ ÀÏ ¶§ */
     else if (&lastInsert == lastInsert.getparent()->getRight())
     {
         BstNode *currentNode = &lastInsert;
@@ -83,7 +83,7 @@ BstNode *Heap::FindInsertParent(BstNode &lastInsert)
         {
             currentNode = currentNode->getparent();
             rightSibling = getRightsibling(*currentNode);
-            /**ë¶€ëª¨ ì¤‘ì— ì˜¤ë¥¸ìª½ í˜•ì œê°€ ìžˆë‹¤ë©´ */
+            /**ºÎ¸ð Áß¿¡ ¿À¸¥ÂÊ ÇüÁ¦°¡ ÀÖ´Ù¸é */
             if (rightSibling != nullptr)
             {
                 while (rightSibling->getLeft() != nullptr)
@@ -93,7 +93,7 @@ BstNode *Heap::FindInsertParent(BstNode &lastInsert)
                 return rightSibling;
             }
         }
-        /**ë¶€ëª¨ ì¤‘ì— ì˜¤ë¥¸ìª½ í˜•ì œê°€ ì—†ë‹¤ë©´ */
+        /**ºÎ¸ð Áß¿¡ ¿À¸¥ÂÊ ÇüÁ¦°¡ ¾ø´Ù¸é */
         if (rightSibling == nullptr)
         {
             currentNode = rootNode;
@@ -129,7 +129,7 @@ BstNode *Heap::remove()
     BstNode *deleteNode = lastInsert;
     BstNode *curNode = rootNode;
 
-    /**ì‚­ì œ í•  ì‹¤ì œ ë…¸ë“œê°€ ë£¨íŠ¸ ë…¸ë“œ ì¼ ì‹œ */
+    /**»èÁ¦ ÇÒ ½ÇÁ¦ ³ëµå°¡ ·çÆ® ³ëµå ÀÏ ½Ã */
     if (deleteNode == rootNode)
     {
         lastInsert = nullptr;
@@ -161,13 +161,13 @@ BstNode *Heap::remove()
                 break;
         } while (curNode->getLeft() != nullptr);
         lastInsert = getPrevLastInsert(*deleteNode);
-        cout << "ì‚­ì œ í‚¤ : " << deleteNode->getKey() << endl;
+        cout << "»èÁ¦ Å° : " << deleteNode->getKey() << endl;
         return deleteNode;
     }
 }
 BstNode *Heap::getPrevLastInsert(BstNode &lastInsert)
 {
-    /**ë§ˆì§€ë§‰ ì‚½ìž…ìœ„ì¹˜ê°€ ë¶€ëª¨ì˜ ì™¼ìª½ ìžì‹ì´ì—ˆë‹¤ë©´ */
+    /**¸¶Áö¸· »ðÀÔÀ§Ä¡°¡ ºÎ¸ðÀÇ ¿ÞÂÊ ÀÚ½ÄÀÌ¾ú´Ù¸é */
     if (&lastInsert == lastInsert.getparent()->getLeft())
     {
         BstNode *curNode = &lastInsert;
@@ -176,7 +176,7 @@ BstNode *Heap::getPrevLastInsert(BstNode &lastInsert)
         {
             curNode = curNode->getparent();
             leftsibling = getLeftsibling(*curNode);
-            /**ë¶€ëª¨ì˜ ì™¼ìª½ í˜•ì œê°€ ìžˆì„ ì‹œ */
+            /**ºÎ¸ðÀÇ ¿ÞÂÊ ÇüÁ¦°¡ ÀÖÀ» ½Ã */
             if (leftsibling != nullptr)
             {
                 while (leftsibling->getRight() != nullptr)
@@ -186,7 +186,7 @@ BstNode *Heap::getPrevLastInsert(BstNode &lastInsert)
                 return leftsibling;
             }
         }
-        /**ë¶€ëª¨ì˜ ì™¼ìª½ í˜•ì œê°€ ì—†ì„ ì‹œ */
+        /**ºÎ¸ðÀÇ ¿ÞÂÊ ÇüÁ¦°¡ ¾øÀ» ½Ã */
         if (leftsibling == nullptr)
         {
             curNode = rootNode;
@@ -197,7 +197,7 @@ BstNode *Heap::getPrevLastInsert(BstNode &lastInsert)
             return curNode;
         }
     }
-    /**ë§ˆì§€ë§‰ ì‚½ìž…ì´ ë¶€ëª¨ì˜ ì˜¤ë¥¸ìª½ ìžì‹ì´ì—ˆë‹¤ë©´ */
+    /**¸¶Áö¸· »ðÀÔÀÌ ºÎ¸ðÀÇ ¿À¸¥ÂÊ ÀÚ½ÄÀÌ¾ú´Ù¸é */
     else
     {
         return lastInsert.getparent()->getLeft();

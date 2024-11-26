@@ -1,26 +1,29 @@
 #include <iostream>
 #include <conio.h>
-#include "treedb.h"
-#include "bst.h"
-#include "heap.h"
-
+// #include "treedb.h"
+// #include "bst.h"
+// #include "heap.h"
+#include "btree.h"
 using namespace std;
 
 int main(void)
 {
-    Heap *heap = new Heap();
-    int collection[] = {4, 2, 5, 7, 1};
+    Btree *root = new Btree();
+    int collection[] = {4, 2, 5, 8, 1, 9, 10, 14, 6};
     for (const auto element : collection)
     {
-        heap->insert(element);
+        root->insert(element);
     }
+    root->getRoot()->in_orderTraversal();
 
-    heap->getRoot()->in_OrderTraversal();
-    heap->remove();
+    BtreeIndex *search = root->search(12);
 
-    heap->getRoot()->in_OrderTraversal();
-    cout << "루트 키 : " << heap->getRoot()->getKey() << endl;
+    if (search != nullptr)
+    {
+        cout << "검색 결과 : " << search->getKey() << endl;
+    }
+    else
+        cout << "검색 하신 결과가 없습니다" << endl;
 
     _getch();
-    return 0;
 }
