@@ -29,9 +29,7 @@ public:
     /**노드 검색 */
     BtreeIndex *search(int param);
 
-    void deleteNode()
-    {
-    }
+    void deleteNode(int param);
 };
 
 class BtreeNode
@@ -74,6 +72,16 @@ public:
     /**자식노드 중 가장 큰 키값 비교 함수 (오름차순) */
     static bool compaerByChild(BtreeNode *a, BtreeNode *b);
 
+    int getSelfIndexByParent();
+
+    bool isLeap();
+
+    BtreeNode &getSucessorNode(BtreeNode &pNode, BtreeIndex &pParam);
+
+    BtreeNode *getLeftSibling();
+
+    BtreeNode *getRightSibling();
+    
     /**중위 순회 */
     void in_orderTraversal();
 };

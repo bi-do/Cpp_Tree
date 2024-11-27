@@ -14,7 +14,7 @@ void Btree::insert(int param)
 {
     BtreeIndex *curIndex = new BtreeIndex(param);
 
-    /**ìµœì´ˆ ì‚½ìž… */
+    /**ÃÖÃÊ »ðÀÔ */
     if (rootNode == nullptr)
     {
         rootNode = new BtreeNode();
@@ -25,7 +25,7 @@ void Btree::insert(int param)
         BtreeNode *curNode = rootNode;
         BtreeNode *parentNode = nullptr;
 
-        /**ë¦¬í”„ë…¸ë“œ ì¼ ë•Œ ê¹Œì§€ ê³„ì† íƒìƒ‰ */
+        /**¸®ÇÁ³ëµå ÀÏ ¶§ ±îÁö °è¼Ó Å½»ö */
         while (curNode->getChilds().size() != 0)
         {
             parentNode = curNode;
@@ -33,13 +33,13 @@ void Btree::insert(int param)
         }
         curNode->pushKey(*curIndex);
 
-        /**í˜„ìž¬ ë…¸ë“œì˜ keyê°€ ìµœëŒ€ê°’ë³´ë‹¤ ë§Žë‹¤ë©´ */
+        /**ÇöÀç ³ëµåÀÇ key°¡ ÃÖ´ë°ªº¸´Ù ¸¹´Ù¸é */
         while (curNode->getKeys().size() > maxkey)
         {
             int middelvalue = curNode->getKeys().size() / 2;
             BtreeIndex *middleIndex = curNode->getKeys()[middelvalue];
 
-            /**í˜„ìž¬ ê²€ì¦ ì¤‘ì¸ ë…¸ë“œê°€ ë£¨íŠ¸ ë…¸ë“œë¼ë©´ */
+            /**ÇöÀç °ËÁõ ÁßÀÎ ³ëµå°¡ ·çÆ® ³ëµå¶ó¸é */
             if (parentNode == nullptr)
             {
                 parentNode = new BtreeNode();
@@ -51,7 +51,7 @@ void Btree::insert(int param)
 
             broNode->getKeys().insert(broNode->getKeys().end(), curNode->getKeys().begin() + middelvalue + 1, curNode->getKeys().end());
 
-            /**í˜„ìž¬ ê²€ì¦ ì¤‘ì¸ ë…¸ë“œê°€ ë¦¬í”„ ë…¸ë“œê°€ ì•„ë‹ˆë¼ë©´ */
+            /**ÇöÀç °ËÁõ ÁßÀÎ ³ëµå°¡ ¸®ÇÁ ³ëµå°¡ ¾Æ´Ï¶ó¸é */
             if (curNode->getChilds().size() > 0)
             {
                 broNode->getChilds().insert(broNode->getChilds().end(), curNode->getChilds().begin() + middelvalue + 1, curNode->getChilds().end());
@@ -70,7 +70,7 @@ void Btree::insert(int param)
 
             curNode->getKeys().erase(curNode->getKeys().begin() + middelvalue, curNode->getKeys().end());
 
-            /**ë¶€ëª¨ ë…¸ë“œ keyê°’ í™•ì¸ */
+            /**ºÎ¸ð ³ëµå key°ª È®ÀÎ */
             curNode = parentNode;
             parentNode = parentNode->getParent();
         }
@@ -117,6 +117,157 @@ BtreeIndex *Btree::search(int param)
     return nullptr;
 }
 
+void Btree::deleteNode(int param)
+{
+    BtreeIndex *deleteIndex = nullptr;
+    int deleteIndexNum;
+    BtreeNode *curNode = rootNode;
+    BtreeNode *parent = curNode;
+
+    while (parent != nullptr)
+    {
+        int index = 0;
+        for (BtreeIndex *element : curNode->getKeys())
+        {
+
+            if (param < element->getKey())
+            {
+                if (curNode->isLeap())
+                {
+                    parent = nullptr;
+                    break;
+                }
+                else
+                {
+                    parent = curNode;
+                    curNode = curNode->getChilds()[index];
+                    break;
+                }
+            }
+            else if (param == element->getKey())
+            {
+                parent = nullptr;
+                deleteIndex = element;
+                deleteIndexNum = index;
+                break;
+            }
+            else
+                index++;
+        }
+        if (index == curNode->getKeys().size())
+        {
+            if (curNode->isLeap())
+            {
+                parent = nullptr;
+            }
+            else
+            {
+                parent = curNode;
+                curNode = curNode->getChilds().back();
+            }
+        }
+    }
+
+    if (deleteIndex == nullptr)
+    {
+        cout << "ÇØ´ç °ªÀ» Ã£Áö ¸øÇß½À´Ï´Ù." << endl;
+        return;
+    }
+    /** ¸¸¾à »èÁ¦ÇÏ·Á´Â Å°°¡ ¸®ÇÁ³ëµå°¡ ¾Æ´Ï¶ó¸é */
+    else if (curNode->isLeap() == false)
+    {
+        curNode = &curNode->getSucessorNode(*curNode, *deleteIndex);
+        int tmp = deleteIndex->getKey();
+        deleteIndex->setKey(curNode->getKeys()[0]->getKey());
+        curNode->getKeys()[0]->setKey(tmp);
+        deleteIndex = curNode->getKeys()[0];
+        deleteIndexNum = 0;
+    }
+
+    cout << "»èÁ¦ ¿Ï·á : " << deleteIndex->getKey() << endl;
+    curNode->getKeys().erase(curNode->getKeys().begin() + deleteIndexNum);
+    delete deleteIndex;
+
+    /**ÇöÀç ³ëµåÀÇ Å° ¼ö°¡ ÃÖÀú Å°¼ö º¸´Ù ³·´Ù¸é */
+    while (curNode->getKeys().size() < minkey)
+    {
+        BtreeNode *siblingNode = nullptr;
+        parent = curNode->getParent();
+        int selfindex = curNode->getSelfIndexByParent();
+        int siblingindex;
+        /**¿ÞÂÊ ÇüÁ¦¿¡ Å°ÀÇ ¿©À¯°¡ ÀÖ´Ù¸é */
+        if ((siblingNode = curNode->getLeftSibling()) != nullptr && siblingNode->getKeys().size() > minkey)
+        {
+            siblingindex = selfindex - 1;
+            curNode->pushKey(*parent->getKeys()[siblingindex]);
+            parent->getKeys().erase(parent->getKeys().begin() + siblingindex);
+            parent->pushKey(*siblingNode->getKeys().back());
+            siblingNode->getKeys().pop_back();
+            break;
+        }
+        /**¿À¸¥ÂÊ ÇüÁ¦¿¡ Å°ÀÇ ¿©À¯°¡ ÀÖ´Ù¸é */
+        else if ((siblingNode = curNode->getRightSibling()) != nullptr && siblingNode->getKeys().size() > minkey)
+        {
+            siblingindex = selfindex + 1;
+            curNode->pushKey(*parent->getKeys()[siblingindex]);
+            parent->getKeys().erase(parent->getKeys().begin() + siblingindex);
+            parent->pushKey(*siblingNode->getKeys()[0]);
+            siblingNode->getKeys().erase(siblingNode->getKeys().begin());
+            break;
+        }
+        else
+        {
+            /**¿ÞÂÊ ÇüÁ¦°¡ Á¸ÀçÇÑ´Ù¸é */
+            if ((siblingNode = curNode->getLeftSibling()) != nullptr)
+            {
+                siblingindex = selfindex - 1;
+                siblingNode->getKeys().insert(siblingNode->getKeys().end(), curNode->getKeys().begin(), curNode->getKeys().end());
+                siblingNode->getChilds().insert(siblingNode->getChilds().end(), curNode->getChilds().begin(), curNode->getChilds().end());
+                siblingNode->pushKey(*parent->getKeys()[siblingindex]);
+                parent->getKeys().erase(parent->getKeys().begin() + siblingindex);
+                parent->getChilds().erase(parent->getChilds().begin() + selfindex);
+                curNode->getKeys().clear();
+                curNode->getChilds().clear();
+                delete curNode;
+                curNode = siblingNode;
+            }
+            /**¿ÞÂÊ ÇüÁ¦°¡ Á¸ÀçÇÏÁö ¾Ê´Â´Ù¸é */
+            else if ((siblingNode = curNode->getRightSibling()) != nullptr)
+            {
+                siblingindex = selfindex + 1;
+                curNode->getKeys().insert(curNode->getKeys().end(), siblingNode->getKeys().begin(), siblingNode->getKeys().end());
+                curNode->getChilds().insert(curNode->getChilds().end(), siblingNode->getChilds().begin(), siblingNode->getChilds().end());
+                curNode->pushKey(*parent->getKeys()[selfindex]);
+                parent->getKeys().erase(parent->getKeys().begin() + selfindex);
+                parent->getChilds().erase(parent->getChilds().begin() + siblingindex);
+                siblingNode->getKeys().clear();
+                siblingNode->getChilds().clear();
+                delete siblingNode;
+            }
+            else
+                break;
+            if (parent->getKeys().size() < minkey)
+            {
+                if (parent == rootNode)
+                {
+                    if (parent->getKeys().size() == 0)
+                    {
+                        rootNode = curNode;
+                        parent->getChilds().clear();
+                        parent->getKeys().clear();
+                        delete parent;
+                        curNode->setParent(nullptr);
+                    }
+                    else
+                        break;
+                }
+                else
+                    curNode = parent;
+            }
+        }
+    }
+}
+
 BtreeNode *BtreeNode::getNextNode(int param)
 {
     int index = 0;
@@ -153,7 +304,90 @@ bool BtreeNode::compaerByChild(BtreeNode *a, BtreeNode *b)
 {
     return a->getKeys().back()->getKey() < b->getKeys().back()->getKey();
 }
+int BtreeNode::getSelfIndexByParent()
+{
+    if (this->parent == nullptr)
+    {
+        return -1;
+    }
+    else
+    {
+        int Selfindex = 0;
+        for (BtreeNode *element : parent->childs)
+        {
+            if (element == this)
+            {
+                break;
+            }
+            else
+                Selfindex++;
+        }
+        return Selfindex;
+    }
+}
 
+bool BtreeNode::isLeap()
+{
+    if (this->childs.size() > 0)
+    {
+        return false;
+    }
+    else
+        return true;
+}
+
+BtreeNode &BtreeNode::getSucessorNode(BtreeNode &pNode, BtreeIndex &pParam)
+{
+    BtreeNode *curNode = nullptr;
+    for (BtreeIndex *element : pNode.getKeys())
+    {
+        int index = 0;
+        if (element == &pParam)
+        {
+            curNode = pNode.childs[index + 1];
+            break;
+        }
+        else
+            index++;
+    }
+    while (curNode->childs.size() > 0)
+    {
+        curNode = curNode->childs[0];
+    }
+    return *curNode;
+}
+BtreeNode *BtreeNode::getLeftSibling()
+{
+    BtreeNode *curNode = nullptr;
+    int count = 0;
+    while (curNode != this)
+    {
+        curNode = this->parent->childs[count];
+        count++;
+    }
+    if (count > 1)
+    {
+        return this->parent->childs[count - 2];
+    }
+    else
+        return nullptr;
+}
+BtreeNode *BtreeNode::getRightSibling()
+{
+    BtreeNode *curNode = nullptr;
+    int count = 0;
+    while (curNode != this)
+    {
+        curNode = this->parent->childs[count];
+        count++;
+    }
+    if (this->parent->childs.size() > count)
+    {
+        return this->parent->childs[count];
+    }
+    else
+        return nullptr;
+}
 void BtreeNode::in_orderTraversal()
 {
     for (int i = 0; i < this->keys.size(); i++)

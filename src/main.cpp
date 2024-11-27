@@ -15,8 +15,10 @@ int main(void)
         root->insert(element);
     }
     root->getRoot()->in_orderTraversal();
-
-    BtreeIndex *search = root->search(12);
+    // root->deleteNode(10);
+    root->getRoot()->in_orderTraversal();
+    root->deleteNode(3);
+    BtreeIndex *search = root->search(10);
 
     if (search != nullptr)
     {
